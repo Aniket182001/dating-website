@@ -9,21 +9,20 @@ import confetti from 'canvas-confetti';
 import { noMessages } from './noMessages';
 
 // YES button grows aggressively with each NO press.
-// Each press adds a clearly visible jump. By press 10+ the button fills the full card.
-const YES_SCALES = [1, 1.12, 1.24, 1.36, 1.50, 1.65, 1.80, 1.94, 2.08, 2.20, 2.32, 2.42, 2.50, 2.56, 2.60];
+const YES_SCALES = [1, 1.25, 1.5, 1.8, 2.2, 2.6, 3.0];
 
 export default function App() {
   const [screen, setScreen] = useState(1);
   const [showRequestCard, setShowRequestCard] = useState(false);
 
-  // Screen-2 interaction state
+  // Screen-4 interaction state (Proposal screen)
   const [noCount, setNoCount] = useState(0);
   const [yesLabel, setYesLabel] = useState('🥰 YES');
   const [yesDisabled, setYesDisabled] = useState(false);
 
   /* ── Confetti + request card on success screen ── */
   useEffect(() => {
-    if (screen !== 3) return;
+    if (screen !== 5) return;
 
     confetti({
       particleCount: 150,
@@ -63,7 +62,7 @@ export default function App() {
     setYesDisabled(true);
     setYesLabel('🥹 REALLY?');
     setTimeout(() => {
-      setScreen(3);
+      setScreen(5);
     }, 500);
   }, [yesDisabled]);
 
@@ -72,11 +71,14 @@ export default function App() {
     setNoCount((prev) => Math.min(prev + 1, noMessages.length - 1));
   }, []);
 
-  /* ── Derived values for screen 2 ── */
+  /* ── Derived values for proposal ── */
   const noLabel = noCount === 0 ? '😏 NO' : noMessages[noCount];
   const yesScale = YES_SCALES[Math.min(noCount, YES_SCALES.length - 1)];
-  // YES font grows clearly with each press (capped at 1.6rem for very large button)
-  const yesFontSize = Math.min(1.125 + noCount * 0.075, 1.6);
+  
+  // YES font grows clearly and aggressively with scale progression
+  const yesFontSize = Math.min(1.125 * yesScale, 2.5);
+  const yesPaddingTop = `${1 * yesScale}rem`;
+  const yesPaddingBottom = `${1 * yesScale}rem`;
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center p-4 relative bg-[#FFE7EF] overflow-hidden selection:bg-[#FF6FA5]/20 selection:text-[#FF6FA5]">
@@ -125,8 +127,81 @@ export default function App() {
           </div>
         )}
 
-        {/* ── SCREEN 2 ── */}
+        {/* ── SCREEN 2 (Friendship Memories) ── */}
         {screen === 2 && (
+          <div className="flex-1 flex flex-col justify-between animate-fade-in">
+            <div className="mt-4 flex justify-center">
+              <GifDisplay
+                src="https://media.tenor.com/BPdD0RL63tcAAAAi/anuragita-anurag.gif"
+                alt="Friendship memories GIF"
+                fallback="❤️"
+                maxWidth="220px"
+              />
+            </div>
+
+            <div className="text-center my-6 space-y-3">
+              <h1 className="text-3xl font-heading font-extrabold text-gray-800 tracking-tight">
+                Before we continue...
+              </h1>
+              <p className="text-sm sm:text-base font-sans font-semibold text-gray-600 leading-relaxed px-2">
+                Over the years we've had some crazy conversations, shared countless laughs, and created so many memories that I genuinely cherish ❤️
+              </p>
+            </div>
+
+            <div className="mb-6">
+              <button
+                type="button"
+                onClick={() => setScreen(3)}
+                className="w-full py-4 bg-[#FF6FA5] hover:bg-[#ff5b97] text-white font-heading font-bold text-lg rounded-2xl shadow-lg shadow-pink-200 hover:shadow-xl hover:shadow-pink-300 active:scale-95 transition-all duration-300 select-none cursor-pointer"
+              >
+                Continue ✨
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ── SCREEN 3 (Tiny Curiosity) ── */}
+        {screen === 3 && (
+          <div className="flex-1 flex flex-col justify-between animate-fade-in">
+            <div className="mt-4 flex justify-center">
+              <GifDisplay
+                src="https://media.tenor.com/UCYy8CnBm3wAAAAi/bunny-rabbit.gif"
+                alt="Tiny curiosity GIF"
+                fallback="🤭"
+                maxWidth="220px"
+              />
+            </div>
+
+            <div className="text-center my-6 space-y-3">
+              <h1 className="text-3xl font-heading font-extrabold text-gray-800 tracking-tight">
+                One more question...
+              </h1>
+              <p className="text-sm sm:text-base font-sans font-semibold text-gray-600 leading-relaxed px-2">
+                Would you like to discover what this surprise is all about? 👀
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3 mb-6">
+              <button
+                type="button"
+                onClick={() => setScreen(4)}
+                className="w-full py-4 bg-[#FF6FA5] hover:bg-[#ff5b97] text-white font-heading font-bold text-lg rounded-2xl shadow-lg shadow-pink-200 hover:shadow-xl hover:shadow-pink-300 active:scale-95 transition-all duration-300 select-none cursor-pointer"
+              >
+                Of course 😄
+              </button>
+              <button
+                type="button"
+                onClick={() => setScreen(4)}
+                className="w-full py-4 bg-[#C8A2FF] hover:bg-[#b585ff] text-white font-heading font-bold text-lg rounded-2xl shadow-lg shadow-purple-100 hover:shadow-xl hover:shadow-purple-200 active:scale-95 transition-all duration-300 select-none cursor-pointer"
+              >
+                I'm curious now 🤭
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ── SCREEN 4 (Proposal Screen) ── */}
+        {screen === 4 && (
           <div className="flex-1 flex flex-col justify-between animate-fade-in">
             {/* GIF stays fixed throughout the entire question screen */}
             <div className="mt-4">
@@ -161,8 +236,12 @@ export default function App() {
                   type="button"
                   disabled={yesDisabled}
                   onClick={handleYes}
-                  className="w-full py-4 text-white font-heading font-extrabold rounded-2xl shadow-md shadow-pink-200 hover:shadow-lg hover:shadow-pink-300 transition-all duration-500 select-none cursor-pointer bg-[#FF6FA5] hover:bg-[#ff5b97] active:scale-95 disabled:opacity-80"
-                  style={{ fontSize: `${yesFontSize}rem` }}
+                  className="w-full font-heading font-extrabold rounded-2xl shadow-md shadow-green-100 hover:shadow-lg hover:shadow-green-200 transition-all duration-500 select-none cursor-pointer bg-[#A8E6A3] hover:bg-[#96d791] text-[#2E5030] active:scale-95 disabled:opacity-80"
+                  style={{ 
+                    fontSize: `${yesFontSize}rem`,
+                    paddingTop: yesPaddingTop,
+                    paddingBottom: yesPaddingBottom,
+                  }}
                 >
                   {yesLabel}
                 </button>
@@ -174,7 +253,7 @@ export default function App() {
                   id="no-btn"
                   type="button"
                   onClick={handleNo}
-                  className="px-6 py-3 min-w-[80px] bg-[#C8A2FF] hover:bg-[#b585ff] text-white font-heading font-bold rounded-2xl shadow-md shadow-purple-100 hover:shadow-lg hover:shadow-purple-200 active:scale-95 transition-all duration-300 select-none cursor-pointer text-sm text-center break-words leading-snug"
+                  className="px-6 py-3 min-w-[80px] bg-[#FFB3C1] hover:bg-[#ffa1b2] text-[#7A3040] font-heading font-bold rounded-2xl shadow-md shadow-pink-100 hover:shadow-lg hover:shadow-pink-200 active:scale-95 transition-all duration-300 select-none cursor-pointer text-sm text-center break-words leading-snug"
                 >
                   {noLabel}
                 </button>
@@ -183,8 +262,8 @@ export default function App() {
           </div>
         )}
 
-        {/* ── SCREEN 3 — SUCCESS ── */}
-        {screen === 3 && (
+        {/* ── SCREEN 5 — SUCCESS ── */}
+        {screen === 5 && (
           <div className="flex-1 flex flex-col justify-between relative animate-fade-in">
             <Sparkles />
 
