@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import DatePickerCard from '../components/DatePickerCard';
 import FoodCard from '../components/FoodCard';
 import GifDisplay from '../components/GifDisplay';
-import Footer from '../components/Footer';
 
 export default function DatePage() {
   const navigate = useNavigate();
@@ -346,8 +345,6 @@ export default function DatePage() {
             </div>
           </div>
         )}
-
-        <Footer />
       </div>
     </div>
   );
