@@ -208,7 +208,10 @@ export default function App() {
               <BearGif mood="happy" />
             </div>
 
-            <div className="text-center my-4">
+            <div className="text-center my-4 space-y-1">
+              <span className="text-[#FF6FA5] font-sans font-bold text-base tracking-wide block">
+                I wanted to ask
+              </span>
               <h1 className="text-3xl font-heading font-extrabold text-gray-800 tracking-tight leading-snug">
                 Will you be my girlfriend? ❤️
               </h1>
